@@ -13,3 +13,5 @@ markdown_extensions:
 nav:
   - Introduction: index.md
   - Prerequisites: prerequisites.md
+  - TD1 - First steps in the Hadoop ecosystem: td1.md 
+  - Resources: resources.md 
