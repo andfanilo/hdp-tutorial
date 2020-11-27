@@ -5,7 +5,11 @@ theme:
     primary: indigo
 markdown_extensions:
   - admonition
+  - def_list
   - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
+nav:
+  - Introduction: index.md
+  - Prerequisites: prerequisites.md
