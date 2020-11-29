@@ -11,13 +11,13 @@
 Before working on the tutorial, we need a working Hadoop cluster. We are going to use:
 
 - [VirtualBox](https://www.virtualbox.org/) to run the virtual machine.
-- [HDP 2.5.0](https://www.cloudera.com/downloads/hortonworks-sandbox.html). It is less demanding in terms of resources than version 3+ and sufficient for this tutorial. Also version 3+ removes some minor features used through the tutorial like the Pig View.
+- [Hortonworks Sandbox 2.5.0](https://www.cloudera.com/downloads/hortonworks-sandbox.html). It is less demanding in terms of resources than version 3+ and sufficient for this tutorial. Also version 3+ removes some minor features used through the tutorial like the Pig View.
 
 Follow the given steps to import the machine in VirtualBox:
 
 - Download [Hortonworks Sandbox 2.5.0](https://www.cloudera.com/downloads/hortonworks-sandbox/hdp.html) and unzip the appliance for VirtualBox.
 - Import the `.ova` file into VirtualBox. **Don't start it yet** if you want to configure it.
-  - You may configure the VM to use more or less RAM depending on your machine, through the `Configuration > System` view. The recommended value is around 6-8 Go RAM, but you will get away with using 2-4 Go.
+  - You may configure the VM to use more or less RAM depending on your machine, through the `Configuration > System` view. The recommended value is around 6-8 Go RAM, but you should get away with using 2-4 Go.
 - Start the virtual machine with the `Start` green arrow. This may take a few minutes.
   - If the virtual machine stops during startup, it is generally because you don't have enough resources. Try to open a process manager and kill some RAM-consuming processes, or lower the RAM needed by the virtual machine using the above step.
 - Open a web browser to [http://localhost:8888](http://localhost:8888) to be greeted with the Hortonworks Data Platform dashboard

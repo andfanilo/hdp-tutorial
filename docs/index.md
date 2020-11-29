@@ -2,7 +2,7 @@
 
 ![](./images/ecosystem.png)
 
-In this university tutorial, we will look into the Hadoop ecosystem by browsing through the [Hortonworks Data Platform Sandbox](https://www.cloudera.com/downloads/hortonworks-sandbox.html) virtual machine.
+In this university tutorial, we will look into the Hadoop ecosystem by browsing through the [Hortonworks Sandbox](https://www.cloudera.com/downloads/hortonworks-sandbox.html) virtual machine.
 
 Expect to interact with:
 

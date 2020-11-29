@@ -24,23 +24,23 @@ For this tutorial, we are going to focus on managing our cluster through [Ambari
     - In the left sidebar, you should recognize some of the Hadoop services presented in the lecture.
     - The main area displays KPIs to monitor the platform. Apart from Supervisors Live, there should not have too many red flags.
     - The topbar has a few links to running services, list of hosts and an admin portal.
-    - Some links go to `http://sandbox.hortonworks.com`, replace that by `http://localhost` if you want to check it out.
+    - Some links go to `http://sandbox.hortonworks.com`, replace that by `http://localhost` if you want to check them out.
 
 Browse the dashboard to answer the following:
 
 !!! question "Questions on the Ambari dashboard"
     - How many Namenodes/Datanodes are currently running in the virtual machine ?
-    - What is the jdbc URL to connect to the Hive server ? _Take note for when we will want to connect PowerBI._
+    - What is the jdbc URL to connect to the Hive server ?
     - The YARN cluster comprises of a Resource Manager and a Node Manager. How do you restart all Node Managers ?
 
 ## 2. Uploading files to HDFS
 
-There are two ways to upload data to HDFS: from the command line and from the Ambari Files View.
+There are two ways to upload data to HDFS: from the Ambari Files View and from a terminal.
 
 In this section we will:
 
-- [ ] Upload the `data` folder into HDFS through the Ambari Files View
-- [ ] Move folder, then upload the `titanic.csv` file in HDFS with the command line.
+- [ ] Upload the `data` folder of the project (which you can find [here](https://github.com/andfanilo/hdp-tutorial/tree/main/data)) into HDFS through the Ambari Files View
+- [ ] Move folders, then upload the [titanic.csv](https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv) file in HDFS with the command line.
 
 ### Using the Ambari Files View
 
@@ -51,6 +51,9 @@ In this section we will:
 
 - Create a new folder `root` inside `/user`.
 - Change the permissions of the folder `/user/root` to add `group` and `other` write/execute permissions. _This will prove necessary so the `root` user can actually access its own folder from the command-line._
+
+![](./images/permissions.PNG)
+
 - Enter the `/user/root` folder, create a new `data` folder and upload `geolocation.csv` and `trucks.csv` inside. You should have `/user/root/data/geolocation.csv` and `user/root/data/trucks.csv` by the end.
 
 We now have data in HDFS!
@@ -61,7 +64,8 @@ We now have data in HDFS!
 But what does it mean? You have to imagine the Hadoop Data Platform is actually a remote cluster of machines, so when you upload a big file in HDFS it gets cut into blocks of 64MB and spread accross multiple DataNodes, and the NameNode keeps a reference for this file in HDFS to all blocks in the cluster.
 
 !!! info 
-    The URL `/user/root/data/geolocation.csv` in Ambari Views is actually `hdfs:///user/root/data/geolocation.csv`. The `hdfs://` specifies to look into the HDFS cluster instead of locally when using a HDFS client.
+    - The URL `/user/root/data/geolocation.csv` in Ambari Views is actually `hdfs:///user/root/data/geolocation.csv`. The `hdfs:///` specifies to look into the HDFS cluster instead of locally when using a HDFS client.
+    - `hdfs:///` is a shortcut for `hdfs://<host>:<port>/` so you won't need to specify `hdfs://sandbox.hortonworks.com:8020/` every time.
 
 **Recap**: 
 
@@ -69,23 +73,27 @@ But what does it mean? You have to imagine the Hadoop Data Platform is actually 
 
 ### Using the Command-line
 
-In this section, we will use the command-line to check that HDFS indeed has our data files in `/user/root`, then we will upload the [titanic.csv](https://gist.github.com/andfanilo/f8bb4df850abd520f8c079105dd9553a).
+In this section, we will use the command-line to check that HDFS indeed has our data files in `/user/root`, then we will upload the [titanic.csv](https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv).
 
 !!! tip
-    Don't be discouraged by the command-line. It is generally the best way to interact with remote systems through scripting and copy-pasting commands!
+    :student: Don't be discouraged by the command-line. It is one of the best ways to interact with remote systems, enabling scripting and copy-pasting commands!
+    
+    I recommend taking advantage of this session to follow the `Directly ssh into the machine` section, and download and try PuTTY on Windows, or use the terminal on Mac/Linux, to connect to remote machines like this virtual machine. This experience is especially helpful in enterprise when you need to run commands on remote machines.
 
-`If you already use an ssh client`
-:    - If you know your way with an ssh client like PuTTy, SSH into localhost on port 2222. Credentials are **root**/**hadoop**.
+`Directly ssh into the machine`
+:    - On Windows, use an ssh client like [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html), then SSH into localhost on port 2222. Credentials are **root**/**hadoop**.
 
 ![](./images/putty-config.png)
 
-`If you have no idea about ssh clients`
+- You can also, especially on Mac/Linux machines, open a terminal and directly ssh into the virtual machine with `ssh -p 2222 root@localhost`.
+
+`Using the integrated browser-based shell`
 :    - You can connect to a shell in the Virtual machine with your browser in http://localhost:4200. Credentials are **root**/**hadoop**.
 
 ![](./images/shell-in-a-box.PNG)
 
 !!! note
-    In both cases you will be asked to change your root password. Type the current password again then change to a long password. Just remember it for future sessions :).
+    In both cases you will be asked to change your root password. Type the current password again then change to a long password. Just remember it for future sessions :smile:.
 
 ---
 
@@ -95,6 +103,61 @@ Now that you are connected to your virtual machine:
 
 - You can access the `hdfs` command from the terminal. This should output the help from the command line.
 - Display the version of HDFS with `hdfs version`.
+
+??? note "Output"
+    ```
+    ssh -p 2222 root@localhost
+    Could not create directory '/home/.../.ssh'.
+    The authenticity of host '[localhost]:2222 ([127.0.0.1]:2222)' can't be established.
+    Are you sure you want to continue connecting (yes/no)? yes
+    Failed to add the host to the list of known hosts (/home/.../.ssh/known_hosts).
+    root@localhost's password:
+    Last login: Sun Nov 29 13:19:19 2020 from 10.0.2.2
+    [root@sandbox ~]# hdfs                                                                       
+    Usage: hdfs [--config confdir] [--loglevel loglevel] COMMAND                                 
+        where COMMAND is one of:                                                              
+    dfs                  run a filesystem command on the file systems supported in Hadoop.     
+    classpath            prints the classpath                                                  
+    namenode -format     format the DFS filesystem                                             
+    secondarynamenode    run the DFS secondary namenode                                        
+    namenode             run the DFS namenode                                                  
+    journalnode          run the DFS journalnode                                               
+    zkfc                 run the ZK Failover Controller daemon                                 
+    datanode             run a DFS datanode                                                    
+    dfsadmin             run a DFS admin client                                                
+    envvars              display computed Hadoop environment variables                         
+    haadmin              run a DFS HA admin client                                             
+    fsck                 run a DFS filesystem checking utility                                 
+    balancer             run a cluster balancing utility                                       
+    jmxget               get JMX exported values from NameNode or DataNode.                    
+    mover                run a utility to move block replicas across                           
+                        storage types                                                         
+    oiv                  apply the offline fsimage viewer to an fsimage                        
+    oiv_legacy           apply the offline fsimage viewer to an legacy fsimage                 
+    oev                  apply the offline edits viewer to an edits file                       
+    fetchdt              fetch a delegation token from the NameNode                            
+    getconf              get config values from configuration                                  
+    groups               get the groups which users belong to                                  
+    snapshotDiff         diff two snapshots of a directory or diff the                         
+                        current directory contents with a snapshot                            
+    lsSnapshottableDir   list all snapshottable dirs owned by the current user                 
+                                                    Use -help to see options                     
+    portmap              run a portmap service                                                 
+    nfs3                 run an NFS version 3 gateway                                          
+    cacheadmin           configure the HDFS cache                                              
+    crypto               configure HDFS encryption zones                                       
+    storagepolicies      list/get/set block storage policies                                   
+    version              print the version                                                     
+                                                                                                
+    Most commands print help when invoked w/o parameters.                                        
+    [root@sandbox ~]# hdfs version                                                               
+    Hadoop 2.7.3.2.5.0.0-1245                                                                    
+    Subversion git@github.com:hortonworks/hadoop.git -r cb6e514b14fb60e9995e5ad9543315cd404b4e59 
+    Compiled by jenkins on 2016-08-26T00:55Z                                                     
+    Compiled with protoc 2.5.0                                                                   
+    From source with checksum eba8ae32a1d8bb736a829d9dc18dddc2                                   
+    This command was run using /usr/hdp/2.5.0.0-1245/hadoop/hadoop-common-2.7.3.2.5.0.0-1245.jar 
+    ```
 
 !!! tip
     The `hdfs dfs` command gives you access to all commands to interact with files in HDFS. Then `hdfs dfs <command> -h` gives you the command manual.
@@ -107,11 +170,37 @@ Now that you are connected to your virtual machine:
 
 **Download the Titanic dataset into HDFS**
 
-- Use the `wget` command to download the [Titanic dataset](https://gist.githubusercontent.com/andfanilo/f8bb4df850abd520f8c079105dd9553a/raw/fa71405126017e6a37bea592440b4bee94bf7b9e/titanic.csv) to your local machine.
+- Use the `wget` command to download the [Titanic dataset](https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv) in the filesystem of your virtual machine. 
   - Verify the file is present with `ls` and correct with `head -n 5 titanic.csv`.
-- To copy files from your local machine to HDFS, there is `hdfs dfs -copyFromLocal <local_file> <path_in_HDFS>`.
-  - Build the `/user/root/test` HDFS folder with `hdfs dfs mkdir <path_to_folder>`.
-  - Copy `titanic.csv` file from the local VM into the `/user/root/test` HDFS folder.
+
+??? note "Output"
+    ```
+    [root@sandbox ~]# wget https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv
+    --2020-11-29 14:13:59--  https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv
+    Resolving raw.githubusercontent.com... 151.101.120.133
+    Connecting to raw.githubusercontent.com|151.101.120.133|:443... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 60303 (59K) [text/plain]
+    Saving to: "titanic.csv"
+
+    100%[==============================================================================================================================>] 60,303      --.-K/s   in 0.008s
+
+    2020-11-29 14:13:59 (6.98 MB/s) - "titanic.csv" saved [60303/60303]
+
+    [root@sandbox ~]# ls
+    anaconda-ks.cfg  blueprint.json  build.out  hdp  install.log  install.log.syslog  sandbox.info  start_ambari.sh  start_hbase.sh  titanic.csv
+    [root@sandbox ~]# head -5 titanic.csv
+    PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+    1,0,3,"Braund, Mr. Owen Harris",male,22,1,0,A/5 21171,7.25,,S
+    2,1,1,"Cumings, Mrs. John Bradley (Florence Briggs Thayer)",female,38,1,0,PC 17599,71.2833,C85,C
+    3,1,3,"Heikkinen, Miss. Laina",female,26,0,0,STON/O2. 3101282,7.925,,S
+    4,1,1,"Futrelle, Mrs. Jacques Heath (Lily May Peel)",female,35,1,0,113803,53.1,C123,S
+    ```
+
+To copy files from your local machine to HDFS, there is `hdfs dfs -copyFromLocal <local_file> <path_in_HDFS>`.
+
+- Build the `/user/root/test` HDFS folder with `hdfs dfs mkdir <path_to_folder>`.
+- Copy `titanic.csv` file from the local VM into the `/user/root/test` HDFS folder.
 
 **Changing permissions for hdfs:///tmp**
 
@@ -132,7 +221,24 @@ _Don't forget to `exit` to go back to the `root` user._
 - [x] We downloaded `titanic.csv` dataset into the virtual machine, then sent it to HDFS in `hdfs:///user/root/test`.
 - [x] We changed permissions for `hdfs:///tmp`.
 
-![](./images/end-copy.PNG)
+??? note "Output"
+    ```
+    [root@sandbox ~]# hdfs dfs -ls /user/root/geoloc
+    Found 2 items
+    -rw-r--r--   3 raj_ops hdfs     526677 2020-11-23 17:56 /user/root/geoloc/geolocation.csv
+    -rw-r--r--   3 raj_ops hdfs      61378 2020-11-23 17:56 /user/root/geoloc/trucks.csv
+    [root@sandbox ~]# hdfs dfs -ls /user/root/test
+    Found 1 items
+    -rw-r--r--   1 root hdfs      60301 2020-11-24 14:59 /user/root/test/titanic.csv
+    [root@sandbox ~]# hdfs dfs -ls /tmp
+    Found 6 items
+    drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:10 /tmp/.pigjobs
+    drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:09 /tmp/.pigscripts
+    drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:09 /tmp/.pigstore
+    drwxrwxrwx   - hdfs      hdfs          0 2016-10-25 07:48 /tmp/entity-file-history
+    drwxrwxrwx   - ambari-qa hdfs          0 2020-11-27 16:46 /tmp/hive
+    drwx------   - root      hdfs          0 2020-11-27 15:38 /tmp/temp890518890
+    ```
 
 !!! info "Going back to our objectives"
     - [x] Get used to the Ambari interface
@@ -333,9 +439,7 @@ SELECT truckid FROM geolocation LIMIT 10;
 
 ## Conclusion
 
-We have seen the first Hadoop libraries, and we are now able to store raw data in HDFS, then process it with Pig or Hive.
-
-In the next tutorial, we will have a look at Zeppelin to interact with our data.
+:tada: We have seen the first Hadoop libraries, and we are now able to store raw data in HDFS, then process it with Pig or Hive.
 
 !!! info "Going back to our objectives"
     - [x] Get used to the Ambari interface
@@ -343,3 +447,5 @@ In the next tutorial, we will have a look at Zeppelin to interact with our data.
     - [x] Run MapReduce jobs on data in HDFS
     - [x] Run Pig jobs on data in HDFS
     - [x] Run Hive jobs on data in HDFS
+
+In the next tutorial, we will build our own ETL-like solution in Big Data. We will have a look at ingesting unstructured data live to HDFS, extracting and structuring the important information into a Hive table, and build simple graphs.

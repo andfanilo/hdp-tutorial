@@ -5,6 +5,9 @@ theme:
     primary: indigo
 markdown_extensions:
   - admonition
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - def_list
   - pymdownx.details
   - pymdownx.superfences
@@ -14,4 +17,6 @@ nav:
   - Introduction: index.md
   - Prerequisites: prerequisites.md
   - TD1 - First steps in the Hadoop ecosystem: td1.md 
+  - TD2 - Simulating customer behavior analytics in ecommerce: td2.md 
+  - TD3: td3.md 
   - Resources: resources.md 
