@@ -1,0 +1,1016 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-6.1.6">
+    
+    
+      
+        <title>TD1 - First steps in the Hadoop ecosystem - Big Data Tutorial - Hortonworks Data Platform</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.6910b76c.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.196e0c26.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#4051b5">
+        
+      
+    
+    
+    
+      
+        
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="indigo" data-md-color-accent="">
+      
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#td1-first-steps-in-the-hadoop-ecosystem" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="Big Data Tutorial - Hortonworks Data Platform" class="md-header-nav__button md-logo" aria-label="Big Data Tutorial - Hortonworks Data Platform">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Big Data Tutorial - Hortonworks Data Platform
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              TD1 - First steps in the Hadoop ecosystem
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Big Data Tutorial - Hortonworks Data Platform" class="md-nav__button md-logo" aria-label="Big Data Tutorial - Hortonworks Data Platform">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Big Data Tutorial - Hortonworks Data Platform
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." class="md-nav__link">
+      Introduction
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../prerequisites/" class="md-nav__link">
+      Prerequisites
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        TD1 - First steps in the Hadoop ecosystem
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
+    <a href="./" class="md-nav__link md-nav__link--active">
+      TD1 - First steps in the Hadoop ecosystem
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    Objectives
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-browsing-the-ambari-interface" class="md-nav__link">
+    1. Browsing the Ambari interface
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-uploading-files-to-hdfs" class="md-nav__link">
+    2. Uploading files to HDFS
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Uploading files to HDFS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-ambari-files-view" class="md-nav__link">
+    Using the Ambari Files View
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-command-line" class="md-nav__link">
+    Using the Command-line
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-running-a-mapreduce-job" class="md-nav__link">
+    3. Running a MapReduce job
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Running a MapReduce job">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compute-a-distributed-pi" class="md-nav__link">
+    Compute a distributed Pi
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compute-wordcount-on-files-in-hdfs" class="md-nav__link">
+    Compute wordcount on files in HDFS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-running-pig-jobs" class="md-nav__link">
+    4. Running Pig jobs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-running-sql-jobs-with-hive" class="md-nav__link">
+    5. Running SQL jobs with Hive
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../td2/" class="md-nav__link">
+      TD2 - Simulating customer behavior analytics in ecommerce
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../td3/" class="md-nav__link">
+      TD3
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../resources/" class="md-nav__link">
+      Resources
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#objectives" class="md-nav__link">
+    Objectives
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-browsing-the-ambari-interface" class="md-nav__link">
+    1. Browsing the Ambari interface
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-uploading-files-to-hdfs" class="md-nav__link">
+    2. Uploading files to HDFS
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Uploading files to HDFS">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-ambari-files-view" class="md-nav__link">
+    Using the Ambari Files View
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-command-line" class="md-nav__link">
+    Using the Command-line
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-running-a-mapreduce-job" class="md-nav__link">
+    3. Running a MapReduce job
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Running a MapReduce job">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compute-a-distributed-pi" class="md-nav__link">
+    Compute a distributed Pi
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#compute-wordcount-on-files-in-hdfs" class="md-nav__link">
+    Compute wordcount on files in HDFS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-running-pig-jobs" class="md-nav__link">
+    4. Running Pig jobs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-running-sql-jobs-with-hive" class="md-nav__link">
+    5. Running SQL jobs with Hive
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#conclusion" class="md-nav__link">
+    Conclusion
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="td1-first-steps-in-the-hadoop-ecosystem">TD1 - First steps in the Hadoop ecosystem</h1>
+<p>For this tutorial, we are going to focus on managing our cluster through <a href="https://ambari.apache.org/">Ambari</a> and playing with some Hadoop features.</p>
+<h2 id="objectives">Objectives</h2>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Get used to the Ambari interface</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Upload data into HDFS - Hadoop Distributed File System</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run MapReduce jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run Pig jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run Hive jobs on data in HDFS</li>
+</ul>
+<h2 id="1-browsing-the-ambari-interface">1. Browsing the Ambari interface</h2>
+<ul>
+<li>Open a web browser to <a href="http://localhost:8888">http://localhost:8888</a> to be greeted with the Hortonworks Data Platform dashboard. Click on <code>Launch Dashboard</code> in the left column to pop-up a new browser to Ambari. <em>You can also go to <a href="http://localhost:8080">http://localhost:8080</a> directly.</em></li>
+</ul>
+<p><img alt="" src="../images/hdp-dashboard.PNG" /></p>
+<ul>
+<li>Enter the credentials: <strong>raj_ops</strong>/<strong>raj_ops</strong>. You will arrive on the Ambari dashboard, your cockpit into the Hadoop platform.</li>
+</ul>
+<p><img alt="" src="../images/ambari-dashboard.PNG" /></p>
+<div class="admonition note">
+<p class="admonition-title">Browsing the Ambari dashboard</p>
+<ul>
+<li>In the left sidebar, you should recognize some of the Hadoop services presented in the lecture.</li>
+<li>The main area displays KPIs to monitor the platform. Apart from Supervisors Live, there should not have too many red flags.</li>
+<li>The topbar has a few links to running services, list of hosts and an admin portal.</li>
+<li>Some links go to <code>http://sandbox.hortonworks.com</code>, replace that by <code>http://localhost</code> if you want to check them out.</li>
+</ul>
+</div>
+<p>Browse the dashboard to answer the following:</p>
+<div class="admonition question">
+<p class="admonition-title">Questions on the Ambari dashboard</p>
+<ul>
+<li>How many Namenodes/Datanodes are currently running in the virtual machine ?</li>
+<li>What is the jdbc URL to connect to the Hive server ?</li>
+<li>The YARN cluster comprises of a Resource Manager and a Node Manager. How do you restart all Node Managers ?</li>
+</ul>
+</div>
+<h2 id="2-uploading-files-to-hdfs">2. Uploading files to HDFS</h2>
+<p>There are two ways to upload data to HDFS: from the Ambari Files View and from a terminal.</p>
+<p>In this section we will:</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Upload the <code>data</code> folder of the project (which you can find <a href="https://github.com/andfanilo/hdp-tutorial/tree/main/data">here</a>) into HDFS through the Ambari Files View</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Move folders, then upload the <a href="https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv">titanic.csv</a> file in HDFS with the command line.</li>
+</ul>
+<h3 id="using-the-ambari-files-view">Using the Ambari Files View</h3>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Find the Ambari Files View.</p>
+</div>
+<p><img alt="" src="../images/files-view.PNG" /></p>
+<ul>
+<li>Create a new folder <code>root</code> inside <code>/user</code>.</li>
+<li>Change the permissions of the folder <code>/user/root</code> to add <code>group</code> and <code>other</code> write/execute permissions. <em>This will prove necessary so the <code>root</code> user can actually access its own folder from the command-line.</em></li>
+</ul>
+<p><img alt="" src="../images/permissions.PNG" /></p>
+<ul>
+<li>Enter the <code>/user/root</code> folder, create a new <code>data</code> folder and upload <code>geolocation.csv</code> and <code>trucks.csv</code> inside. You should have <code>/user/root/data/geolocation.csv</code> and <code>user/root/data/trucks.csv</code> by the end.</li>
+</ul>
+<p>We now have data in HDFS!</p>
+<ul>
+<li><strong>geolocation.csv</strong> – This is the collected geolocation data from the trucks. It contains records showing truck location, date, time, type of event, speed, etc.</li>
+<li><strong>trucks.csv</strong> – This is data was exported from a relational database and it shows information on truck models, driverid, truckid, and aggregated mileage info.</li>
+</ul>
+<p>But what does it mean? You have to imagine the Hadoop Data Platform is actually a remote cluster of machines, so when you upload a big file in HDFS it gets cut into blocks of 64MB and spread accross multiple DataNodes, and the NameNode keeps a reference for this file in HDFS to all blocks in the cluster.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<ul>
+<li>The URL <code>/user/root/data/geolocation.csv</code> in Ambari Views is actually <code>hdfs:///user/root/data/geolocation.csv</code>. The <code>hdfs:///</code> specifies to look into the HDFS cluster instead of locally when using a HDFS client.</li>
+<li><code>hdfs:///</code> is a shortcut for <code>hdfs://&lt;host&gt;:&lt;port&gt;/</code> so you won't need to specify <code>hdfs://sandbox.hortonworks.com:8020/</code> every time.</li>
+</ul>
+</div>
+<p><strong>Recap</strong>: </p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> we have uploaded data into HDFS, in the <code>/user/root</code> folder.</li>
+</ul>
+<h3 id="using-the-command-line">Using the Command-line</h3>
+<p>In this section, we will use the command-line to check that HDFS indeed has our data files in <code>/user/root</code>, then we will upload the <a href="https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv">titanic.csv</a>.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><img alt="🧑‍🎓" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f9d1-200d-1f393.svg" title=":student:" /> Don't be discouraged by the command-line. It is one of the best ways to interact with remote systems, enabling scripting and copy-pasting commands!</p>
+<p>I recommend taking advantage of this session to follow the <code>Directly ssh into the machine</code> section, and download and try PuTTY on Windows, or use the terminal on Mac/Linux, to connect to remote machines like this virtual machine. This experience is especially helpful in enterprise when you need to run commands on remote machines.</p>
+</div>
+<dl>
+<dt><code>Directly ssh into the machine</code></dt>
+<dd>
+<ul>
+<li>On Windows, use an ssh client like <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html">PuTTy</a>, then SSH into localhost on port 2222. Credentials are <strong>root</strong>/<strong>hadoop</strong>.</li>
+</ul>
+</dd>
+</dl>
+<p><img alt="" src="../images/putty-config.png" /></p>
+<ul>
+<li>You can also, especially on Mac/Linux machines, open a terminal and directly ssh into the virtual machine with <code>ssh -p 2222 root@localhost</code>.</li>
+</ul>
+<dl>
+<dt><code>Using the integrated browser-based shell</code></dt>
+<dd>
+<ul>
+<li>You can connect to a shell in the Virtual machine with your browser in http://localhost:4200. Credentials are <strong>root</strong>/<strong>hadoop</strong>.</li>
+</ul>
+</dd>
+</dl>
+<p><img alt="" src="../images/shell-in-a-box.PNG" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In both cases you will be asked to change your root password. Type the current password again then change to a long password. Just remember it for future sessions <img alt="😄" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f604.svg" title=":smile:" />.</p>
+</div>
+<hr />
+<p><strong>Moving the data folder to geoloc</strong></p>
+<p>Now that you are connected to your virtual machine:</p>
+<ul>
+<li>You can access the <code>hdfs</code> command from the terminal. This should output the help from the command line.</li>
+<li>Display the version of HDFS with <code>hdfs version</code>.</li>
+</ul>
+<details class="note"><summary>Output</summary><div class="highlight"><pre><span></span><code>ssh -p 2222 root@localhost
+Could not create directory &#39;/home/.../.ssh&#39;.
+The authenticity of host &#39;[localhost]:2222 ([127.0.0.1]:2222)&#39; can&#39;t be established.
+Are you sure you want to continue connecting (yes/no)? yes
+Failed to add the host to the list of known hosts (/home/.../.ssh/known_hosts).
+root@localhost&#39;s password:
+Last login: Sun Nov 29 13:19:19 2020 from 10.0.2.2
+[root@sandbox ~]# hdfs                                                                       
+Usage: hdfs [--config confdir] [--loglevel loglevel] COMMAND                                 
+    where COMMAND is one of:                                                              
+dfs                  run a filesystem command on the file systems supported in Hadoop.     
+classpath            prints the classpath                                                  
+namenode -format     format the DFS filesystem                                             
+secondarynamenode    run the DFS secondary namenode                                        
+namenode             run the DFS namenode                                                  
+journalnode          run the DFS journalnode                                               
+zkfc                 run the ZK Failover Controller daemon                                 
+datanode             run a DFS datanode                                                    
+dfsadmin             run a DFS admin client                                                
+envvars              display computed Hadoop environment variables                         
+haadmin              run a DFS HA admin client                                             
+fsck                 run a DFS filesystem checking utility                                 
+balancer             run a cluster balancing utility                                       
+jmxget               get JMX exported values from NameNode or DataNode.                    
+mover                run a utility to move block replicas across                           
+                    storage types                                                         
+oiv                  apply the offline fsimage viewer to an fsimage                        
+oiv_legacy           apply the offline fsimage viewer to an legacy fsimage                 
+oev                  apply the offline edits viewer to an edits file                       
+fetchdt              fetch a delegation token from the NameNode                            
+getconf              get config values from configuration                                  
+groups               get the groups which users belong to                                  
+snapshotDiff         diff two snapshots of a directory or diff the                         
+                    current directory contents with a snapshot                            
+lsSnapshottableDir   list all snapshottable dirs owned by the current user                 
+                                                Use -help to see options                     
+portmap              run a portmap service                                                 
+nfs3                 run an NFS version 3 gateway                                          
+cacheadmin           configure the HDFS cache                                              
+crypto               configure HDFS encryption zones                                       
+storagepolicies      list/get/set block storage policies                                   
+version              print the version                                                     
+
+Most commands print help when invoked w/o parameters.                                        
+[root@sandbox ~]# hdfs version                                                               
+Hadoop 2.7.3.2.5.0.0-1245                                                                    
+Subversion git@github.com:hortonworks/hadoop.git -r cb6e514b14fb60e9995e5ad9543315cd404b4e59 
+Compiled by jenkins on 2016-08-26T00:55Z                                                     
+Compiled with protoc 2.5.0                                                                   
+From source with checksum eba8ae32a1d8bb736a829d9dc18dddc2                                   
+This command was run using /usr/hdp/2.5.0.0-1245/hadoop/hadoop-common-2.7.3.2.5.0.0-1245.jar 
+</code></pre></div>
+</details>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The <code>hdfs dfs</code> command gives you access to all commands to interact with files in HDFS. Then <code>hdfs dfs &lt;command&gt; -h</code> gives you the command manual.</p>
+</div>
+<ul>
+<li>
+<p>List all folders inside HDFS with <code>hdfs dfs -ls</code>.</p>
+<ul>
+<li>The command <code>hdfs dfs -ls</code> will take you to <code>hdfs:///user/root</code>. <code>hdfs</code> uses your UNIX username to go to the HDFS home location. Since you're connected using <code>root</code> in the Virtual Machine, it connects by default to <code>hdfs:///user/root</code>.</li>
+</ul>
+</li>
+<li>
+<p>Rename the <code>hdfs:///user/root/data</code> folder to <code>hdfs:///user/root/geoloc</code> with <code>hdfs dfs -mv</code>.</p>
+<ul>
+<li>Remember by default that <code>hdfs dfs -mv data geoloc</code> is equivalent to <code>hdfs dfs -mv hdfs:///user/root/data hdfs:///user/root/geoloc</code>.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Download the Titanic dataset into HDFS</strong></p>
+<ul>
+<li>Use the <code>wget</code> command to download the <a href="https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv">Titanic dataset</a> in the filesystem of your virtual machine. </li>
+<li>Verify the file is present with <code>ls</code> and correct with <code>head -n 5 titanic.csv</code>.</li>
+</ul>
+<details class="note"><summary>Output</summary><div class="highlight"><pre><span></span><code>[root@sandbox ~]# wget https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv
+--2020-11-29 14:13:59--  https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/titanic.csv
+Resolving raw.githubusercontent.com... 151.101.120.133
+Connecting to raw.githubusercontent.com|151.101.120.133|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 60303 (59K) [text/plain]
+Saving to: &quot;titanic.csv&quot;
+
+100%[==============================================================================================================================&gt;] 60,303      --.-K/s   in 0.008s
+
+2020-11-29 14:13:59 (6.98 MB/s) - &quot;titanic.csv&quot; saved [60303/60303]
+
+[root@sandbox ~]# ls
+anaconda-ks.cfg  blueprint.json  build.out  hdp  install.log  install.log.syslog  sandbox.info  start_ambari.sh  start_hbase.sh  titanic.csv
+[root@sandbox ~]# head -5 titanic.csv
+PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
+1,0,3,&quot;Braund, Mr. Owen Harris&quot;,male,22,1,0,A/5 21171,7.25,,S
+2,1,1,&quot;Cumings, Mrs. John Bradley (Florence Briggs Thayer)&quot;,female,38,1,0,PC 17599,71.2833,C85,C
+3,1,3,&quot;Heikkinen, Miss. Laina&quot;,female,26,0,0,STON/O2. 3101282,7.925,,S
+4,1,1,&quot;Futrelle, Mrs. Jacques Heath (Lily May Peel)&quot;,female,35,1,0,113803,53.1,C123,S
+</code></pre></div>
+</details>
+<p>To copy files from your local machine to HDFS, there is <code>hdfs dfs -copyFromLocal &lt;local_file&gt; &lt;path_in_HDFS&gt;</code>.</p>
+<ul>
+<li>Build the <code>/user/root/test</code> HDFS folder with <code>hdfs dfs mkdir &lt;path_to_folder&gt;</code>.</li>
+<li>Copy <code>titanic.csv</code> file from the local VM into the <code>/user/root/test</code> HDFS folder.</li>
+</ul>
+<p><strong>Changing permissions for hdfs:///tmp</strong></p>
+<ul>
+<li>Currently, the <code>hdfs:///tmp</code> folder doesn't have permissions for everyone to write in.
+  In the Hadoop ecosystem, <code>root</code> is not the superuser but <code>hdfs</code> is. So we need to be in the <code>hdfs</code> user before running set permissions. Run the following script.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>sudo su -
+su hdfs
+hdfs dfs -chmod -R <span class="m">777</span> /tmp
+</code></pre></div>
+<p><em>Don't forget to <code>exit</code> to go back to the <code>root</code> user.</em></p>
+<p><strong>Recap</strong></p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> In <code>hdfs:///user/root/</code>, we have moved the contents of the <code>data</code> folder into <code>geoloc</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> We downloaded <code>titanic.csv</code> dataset into the virtual machine, then sent it to HDFS in <code>hdfs:///user/root/test</code>.</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> We changed permissions for <code>hdfs:///tmp</code>.</li>
+</ul>
+<details class="note"><summary>Output</summary><div class="highlight"><pre><span></span><code>[root@sandbox ~]# hdfs dfs -ls /user/root/geoloc
+Found 2 items
+-rw-r--r--   3 raj_ops hdfs     526677 2020-11-23 17:56 /user/root/geoloc/geolocation.csv
+-rw-r--r--   3 raj_ops hdfs      61378 2020-11-23 17:56 /user/root/geoloc/trucks.csv
+[root@sandbox ~]# hdfs dfs -ls /user/root/test
+Found 1 items
+-rw-r--r--   1 root hdfs      60301 2020-11-24 14:59 /user/root/test/titanic.csv
+[root@sandbox ~]# hdfs dfs -ls /tmp
+Found 6 items
+drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:10 /tmp/.pigjobs
+drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:09 /tmp/.pigscripts
+drwxrwxrwx   - raj_ops   hdfs          0 2020-11-27 16:09 /tmp/.pigstore
+drwxrwxrwx   - hdfs      hdfs          0 2016-10-25 07:48 /tmp/entity-file-history
+drwxrwxrwx   - ambari-qa hdfs          0 2020-11-27 16:46 /tmp/hive
+drwx------   - root      hdfs          0 2020-11-27 15:38 /tmp/temp890518890
+</code></pre></div>
+</details>
+<div class="admonition info">
+<p class="admonition-title">Going back to our objectives</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Get used to the Ambari interface</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Upload data into HDFS - Hadoop Distributed File System</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run MapReduce jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run Pig jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Run Hive jobs on data in HDFS</li>
+</ul>
+</div>
+<h2 id="3-running-a-mapreduce-job">3. Running a MapReduce job</h2>
+<p>Time to compute stuff on data in HDFS. You should be using a command-line as the <code>root</code> user.</p>
+<h3 id="compute-a-distributed-pi">Compute a distributed Pi</h3>
+<ul>
+<li>Run the Pi example : <code>yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar pi 4 100</code>.<ul>
+<li>You can check all your jobs in the <a href="http://localhost:8088/cluster">Resource Manager UI</a>, from Ambari.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Make the Pi calculation a bit more precise. Looking at the help of the function below, what would be <code>nMaps</code>? <code>nSamples</code>?</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@sandbox ~<span class="o">]</span> yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar pi
+Usage: org.apache.hadoop.examples.QuasiMonteCarlo &lt;nMaps&gt; &lt;nSamples&gt;
+</code></pre></div>
+<h3 id="compute-wordcount-on-files-in-hdfs">Compute wordcount on files in HDFS</h3>
+<p>Now we want to run a wordcount on a file inside HDFS, let's run it on files inside <code>hdfs:///user/root/geoloc/</code>.</p>
+<ul>
+<li>Run <code>yarn jar /usr/hdp/current/hadoop-mapreduce-client/hadoop-mapreduce-examples.jar wordcount geoloc/geolocation.csv output</code>.<ul>
+<li>The command will not work if <code>hdfs:///user/root/output</code> already exists, in that case remove the folder with <code>hdfs dfs -rm -r -f output</code>.</li>
+</ul>
+</li>
+<li>Examine the <code>hdfs:///user/root/output</code> folder. You can use <code>hdfs dfs -ls output</code> and <code>hdfs dfs -cat output/part-r-00000</code>.</li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Can you explain the <code>part-r-00000</code> ?</p>
+</div>
+<ul>
+<li>Only one reducer is working there. You can edit the number of reducers running with the flag <code>-D mapred.reduce.tasks=10</code> . Edit the previous command to change the number of reducers working and output this in a new folder <code>output2</code>.</li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<p>Examine the <code>output2</code> folder. Can you note a difference with the previous execution ?</p>
+</div>
+<details class="note"><summary>Do you want to know more about the Java MapReduce code in the JAR?</summary><p>I am not going to have you write Java code to compute MapReduce, but in case you are wondering:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="p">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.fs.Path</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.conf.*</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.io.*</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.*</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.lib.input.FileInputFormat</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.lib.input.TextInputFormat</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.lib.output.FileOutputFormat</span><span class="p">;</span>
+<span class="kn">import</span> <span class="nn">org.apache.hadoop.mapreduce.lib.output.TextOutputFormat</span><span class="p">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">WordCount</span> <span class="p">{</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Map</span> <span class="kd">extends</span> <span class="n">Mapper</span><span class="o">&lt;</span><span class="n">LongWritable</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">IntWritable</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">private</span> <span class="kd">final</span> <span class="kd">static</span> <span class="n">IntWritable</span> <span class="n">one</span> <span class="o">=</span> <span class="k">new</span> <span class="n">IntWritable</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="kd">private</span> <span class="n">Text</span> <span class="n">word</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Text</span><span class="p">();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">map</span><span class="p">(</span><span class="n">LongWritable</span> <span class="n">key</span><span class="p">,</span> <span class="n">Text</span> <span class="n">value</span><span class="p">,</span> <span class="n">Context</span> <span class="n">context</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">InterruptedException</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="n">line</span> <span class="o">=</span> <span class="n">value</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span>
+        <span class="n">StringTokenizer</span> <span class="n">tokenizer</span> <span class="o">=</span> <span class="k">new</span> <span class="n">StringTokenizer</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="na">hasMoreTokens</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">word</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="na">nextToken</span><span class="p">());</span>
+            <span class="n">context</span><span class="p">.</span><span class="na">write</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">one</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span> 
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Reduce</span> <span class="kd">extends</span> <span class="n">Reducer</span><span class="o">&lt;</span><span class="n">Text</span><span class="p">,</span> <span class="n">IntWritable</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">IntWritable</span><span class="o">&gt;</span> <span class="p">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">Text</span> <span class="n">key</span><span class="p">,</span> <span class="n">Iterator</span><span class="o">&lt;</span><span class="n">IntWritable</span><span class="o">&gt;</span> <span class="n">values</span><span class="p">,</span> <span class="n">Context</span> <span class="n">context</span><span class="p">)</span> 
+      <span class="kd">throws</span> <span class="n">IOException</span><span class="p">,</span> <span class="n">InterruptedException</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">values</span><span class="p">.</span><span class="na">hasNext</span><span class="p">())</span> <span class="p">{</span>
+            <span class="n">sum</span> <span class="o">+=</span> <span class="n">values</span><span class="p">.</span><span class="na">next</span><span class="p">().</span><span class="na">get</span><span class="p">();</span>
+        <span class="p">}</span>
+        <span class="n">context</span><span class="p">.</span><span class="na">write</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="k">new</span> <span class="n">IntWritable</span><span class="p">(</span><span class="n">sum</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="p">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="p">{</span>
+    <span class="n">Configuration</span> <span class="n">conf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Configuration</span><span class="p">();</span>
+
+        <span class="n">Job</span> <span class="n">job</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Job</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="s">&quot;wordcount&quot;</span><span class="p">);</span>
+
+    <span class="n">job</span><span class="p">.</span><span class="na">setOutputKeyClass</span><span class="p">(</span><span class="n">Text</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+    <span class="n">job</span><span class="p">.</span><span class="na">setOutputValueClass</span><span class="p">(</span><span class="n">IntWritable</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="n">job</span><span class="p">.</span><span class="na">setMapperClass</span><span class="p">(</span><span class="n">Map</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+    <span class="n">job</span><span class="p">.</span><span class="na">setReducerClass</span><span class="p">(</span><span class="n">Reduce</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="n">job</span><span class="p">.</span><span class="na">setInputFormatClass</span><span class="p">(</span><span class="n">TextInputFormat</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+    <span class="n">job</span><span class="p">.</span><span class="na">setOutputFormatClass</span><span class="p">(</span><span class="n">TextOutputFormat</span><span class="p">.</span><span class="na">class</span><span class="p">);</span>
+
+    <span class="n">FileInputFormat</span><span class="p">.</span><span class="na">addInputPath</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="k">new</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">));</span>
+    <span class="n">FileOutputFormat</span><span class="p">.</span><span class="na">setOutputPath</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="k">new</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">));</span>
+
+    <span class="n">job</span><span class="p">.</span><span class="na">waitForCompletion</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+</details>
+<h2 id="4-running-pig-jobs">4. Running Pig jobs</h2>
+<p>If you take a look at the Java code for Wordcount, as BI Analysts / Data Scientists you are probably not going to want to write those. In this section we look into Pig, a higher-level tool which converts Pig Latin scripts into MapReduce scripts.</p>
+<p>There are two ways to start a Pig session here:</p>
+<ol>
+<li>Interactively through the Terminal/Command-line, by launching a Pig shell with <code>pig</code>and running commands one by one.</li>
+<li>There's a dedicated Pig View in Ambari. This should be the preferred method if you want to run full scripts but is much longer to run than the Pig shell. Sometimes it errors with an exception from Jetty, don't hesitate to close and come back to the View to reinitialize.</li>
+</ol>
+<p>For this section, we focus on using Pig to analyze the geolocation dataset.</p>
+<ul>
+<li>Run the following script/commands to load the file into a variable, then display the first ten lines from the geolocation file:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>geoloc = LOAD &#39;/user/root/geoloc/geolocation.csv&#39; USING PigStorage(&#39;,&#39;) AS (truckid,driverid,event,latitude,longitude,city,state,velocity,event_ind,idling_ind);
+
+geoloc_limit = LIMIT geoloc 10;
+
+DUMP geoloc_limit;
+</code></pre></div>
+<p><img alt="" src="../images/pig-shell.PNG" /></p>
+<p><img alt="" src="../images/pig-ui.PNG" /></p>
+<ul>
+<li>Let's try to compute some stats on this file.</li>
+</ul>
+<div class="highlight"><pre><span></span><code>geoloc = LOAD &#39;/user/root/geoloc/geolocation.csv&#39; USING PigStorage(&#39;,&#39;) AS (truckid:chararray, driverid:chararray, event:chararray, latitude:double, longitude:double, city:chararray, state:chararray, velocity:double, event_ind:long, idling_ind:long);
+
+truck_ids = GROUP geoloc BY truckid;
+
+result = FOREACH truck_ids GENERATE group AS truckid, COUNT(geoloc) as count;
+
+STORE result INTO &#39;/tmp/results&#39;;
+
+DUMP result;
+</code></pre></div>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<ul>
+<li>Check the <code>hdfs:///tmp/results</code> folder stored in HDFS by the <code>STORE</code> line. What can you say compared to the MapReduce wordcount ?</li>
+<li>Count the list of distinct cities visited per truckid</li>
+<li>Compute the mean velocity per truckid </li>
+</ul>
+</div>
+<p>You may still find legacy Pig jobs in the nature, but you should not be required to write new Pig scripts anymore.</p>
+<h2 id="5-running-sql-jobs-with-hive">5. Running SQL jobs with Hive</h2>
+<p>We as analysts are much more used to using SQL to process our data. The role of datawarehouse package in the Hadoop ecosystem goes to Hive.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In today's world, SQL skills are still very important and one of the primary languages to manipulate data. So always work on your SQL.</p>
+</div>
+<p>Like for Pig:</p>
+<ol>
+<li>you can start a Hive shell from your terminal/command-line, with the <code>hive</code> command. This is dedicated to simple SQL queries or operational management.</li>
+<li>There's a dedicated Hive View in Ambari, with some visualization capabilities.</li>
+</ol>
+<p>Time to create a table to analyze the geolocations again!</p>
+<ul>
+<li>Move the <code>trucks.csv</code> file outside of the <code>hdfs:///user/root/geoloc</code> folder to <code>hdfs:///user/root/trucks</code>. </li>
+<li>Create an external table for the <code>hdfs:///user/root/geoloc</code> folder which contains <code>geolocation.csv</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span> <span class="k">EXTERNAL</span> <span class="k">TABLE</span> <span class="n">geolocation</span> <span class="p">(</span><span class="n">truckid</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">driverid</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">event</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">latitude</span> <span class="n">DOUBLE</span><span class="p">,</span> <span class="n">longitude</span> <span class="n">DOUBLE</span><span class="p">,</span> <span class="n">city</span> <span class="n">STRING</span><span class="p">,</span> <span class="k">state</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">velocity</span> <span class="n">DOUBLE</span><span class="p">,</span> <span class="n">event_ind</span> <span class="nb">BIGINT</span><span class="p">,</span> <span class="n">idling_ind</span> <span class="nb">BIGINT</span><span class="p">)</span>
+<span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">DELIMITED</span>
+<span class="n">FIELDS</span> <span class="n">TERMINATED</span> <span class="k">BY</span> <span class="s1">&#39;,&#39;</span>
+<span class="k">LOCATION</span> <span class="s1">&#39;/user/root/geoloc&#39;</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>Visualize the first rows of the table</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">SELECT</span> <span class="n">truckid</span> <span class="k">FROM</span> <span class="n">geolocation</span> <span class="k">LIMIT</span> <span class="mi">10</span><span class="p">;</span>
+</code></pre></div>
+<p><img alt="" src="../images/hive-shell.PNG" /></p>
+<p><img alt="" src="../images/hive-ui.PNG" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul>
+<li>The way Hive works is every file inside the <code>geoloc</code> folder is read by Hive as data in the table. This is why we had to move out the <code>trucks.csv</code> file.</li>
+<li>The following command creates a Hive table pointing to a HDFS location. You can drop it, it won't destroy the data in HDFS</li>
+</ul>
+</div>
+<div class="admonition question">
+<p class="admonition-title">Question</p>
+<ul>
+<li>Are you again able to count the list of distinct cities visited per truckid, and mean velocity per truckid ?</li>
+<li>On the Ambari View, count the number of distinct cities per trucks and display it on a bar chart.</li>
+</ul>
+</div>
+<p><img alt="" src="../images/result_distinct_city.PNG" /></p>
+<h2 id="conclusion">Conclusion</h2>
+<p><img alt="🎉" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f389.svg" title=":tada:" /> We have seen the first Hadoop libraries, and we are now able to store raw data in HDFS, then process it with Pig or Hive.</p>
+<div class="admonition info">
+<p class="admonition-title">Going back to our objectives</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Get used to the Ambari interface</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Upload data into HDFS - Hadoop Distributed File System</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Run MapReduce jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Run Pig jobs on data in HDFS</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Run Hive jobs on data in HDFS</li>
+</ul>
+</div>
+<p>In the next tutorial, we will build our own ETL-like solution in Big Data. We will have a look at ingesting unstructured data live to HDFS, extracting and structuring the important information into a Hive table, and build simple graphs.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../prerequisites/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Prerequisites
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../td2/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                TD2 - Simulating customer behavior analytics in ecommerce
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.fd16492e.min.js"></script>
+      <script src="../assets/javascripts/bundle.7836ba4d.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.4ac00218.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
