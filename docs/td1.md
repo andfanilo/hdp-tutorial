@@ -39,7 +39,7 @@ There are two ways to upload data to HDFS: from the Ambari Files View and from a
 
 In this section we will:
 
-- [ ] Upload the `data` folder of the project (which you can find [here](https://github.com/andfanilo/hdp-tutorial/tree/main/data)) into HDFS through the Ambari Files View
+- [ ] Upload the `data` folder of the project (which you can find [here](https://github.com/andfanilo/hdp-tutorial/tree/main/data) into HDFS through the Ambari Files View
 - [ ] Move folders, then upload the [titanic.csv](https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv) file in HDFS with the command line.
 
 ### Using the Ambari Files View
@@ -199,7 +199,7 @@ Now that you are connected to your virtual machine:
 
 To copy files from your local machine to HDFS, there is `hdfs dfs -copyFromLocal <local_file> <path_in_HDFS>`.
 
-- Build the `/user/root/test` HDFS folder with `hdfs dfs mkdir <path_to_folder>`.
+- Build the `/user/root/test` HDFS folder with `hdfs dfs -mkdir <path_to_folder>`.
 - Copy `titanic.csv` file from the local VM into the `/user/root/test` HDFS folder.
 
 **Changing permissions for hdfs:///tmp**
