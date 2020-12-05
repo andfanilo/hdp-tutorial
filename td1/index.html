@@ -517,7 +517,7 @@
 <p>There are two ways to upload data to HDFS: from the Ambari Files View and from a terminal.</p>
 <p>In this section we will:</p>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Upload the <code>data</code> folder of the project (which you can find <a href="https://github.com/andfanilo/hdp-tutorial/tree/main/data">here</a>) into HDFS through the Ambari Files View</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Upload the <code>data</code> folder of the project (which you can find <a href="https://github.com/andfanilo/hdp-tutorial/tree/main/data">here</a> into HDFS through the Ambari Files View</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Move folders, then upload the <a href="https://github.com/andfanilo/hdp-tutorial/blob/main/data/titanic.csv">titanic.csv</a> file in HDFS with the command line.</li>
 </ul>
 <h3 id="using-the-ambari-files-view">Using the Ambari Files View</h3>
@@ -690,7 +690,7 @@ PassengerId,Survived,Pclass,Name,Sex,Age,SibSp,Parch,Ticket,Fare,Cabin,Embarked
 </details>
 <p>To copy files from your local machine to HDFS, there is <code>hdfs dfs -copyFromLocal &lt;local_file&gt; &lt;path_in_HDFS&gt;</code>.</p>
 <ul>
-<li>Build the <code>/user/root/test</code> HDFS folder with <code>hdfs dfs mkdir &lt;path_to_folder&gt;</code>.</li>
+<li>Build the <code>/user/root/test</code> HDFS folder with <code>hdfs dfs -mkdir &lt;path_to_folder&gt;</code>.</li>
 <li>Copy <code>titanic.csv</code> file from the local VM into the <code>/user/root/test</code> HDFS folder.</li>
 </ul>
 <p><strong>Changing permissions for hdfs:///tmp</strong></p>

@@ -239,9 +239,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-structuring-apache-logs" class="md-nav__link">
-    1. Structuring Apache logs
+  <a href="#1-structuring-apache-logs-with-hive-and-regex" class="md-nav__link">
+    1. Structuring Apache logs with Hive and regex
   </a>
+  
+    <nav class="md-nav" aria-label="1. Structuring Apache logs with Hive and regex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upload-data-to-hdfs" class="md-nav__link">
+    Upload data to HDFS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-a-hive-table-over-the-log-file" class="md-nav__link">
+    Build a Hive table over the log file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zeppelin-the-big-data-notebook" class="md-nav__link">
+    Zeppelin, the Big Data notebook
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -335,9 +362,36 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#1-structuring-apache-logs" class="md-nav__link">
-    1. Structuring Apache logs
+  <a href="#1-structuring-apache-logs-with-hive-and-regex" class="md-nav__link">
+    1. Structuring Apache logs with Hive and regex
   </a>
+  
+    <nav class="md-nav" aria-label="1. Structuring Apache logs with Hive and regex">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#upload-data-to-hdfs" class="md-nav__link">
+    Upload data to HDFS
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-a-hive-table-over-the-log-file" class="md-nav__link">
+    Build a Hive table over the log file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zeppelin-the-big-data-notebook" class="md-nav__link">
+    Zeppelin, the Big Data notebook
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -383,26 +437,184 @@
                 
                 
                 <h1 id="td2-simulating-customer-behavior-analytics-in-ecommerce">TD2 - Simulating customer behavior analytics in ecommerce</h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Are you curious? This is still in construction though <img alt="😉" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f609.svg" title=":wink:" /></p>
-</div>
+<p>Log analysis is one of the first use cases enabled by Big Data Processing, from parsing web crawlers logs to analyzing customer behavior on websites by rebuilding their sessions from Apache logs.</p>
 <p><img alt="" src="../images/apache-logs.png" /></p>
+<p>In this practice session, we will replicate a (albeit smaller) Big Data pipeline to collect and visualize Apache logs.</p>
+<p><img alt="" src="../images/td2-overview.png" /></p>
+<div class="admonition warning">
+<p class="admonition-title">Saving some memory using Terminal</p>
+<p>This tutorial makes heavy use of Hive and Zeppelin to process data. If you are using less than 8 Go of RAM for the virtual machine, try to not use Ambari for this session and only use the terminal to upload and manage data in HDFS. Ambari consumes a lot of memory when acessed so this saves some resources.    </p>
+</div>
 <h2 id="objectives">Objectives</h2>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Structuring Apache logs</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Structuring Apache logs with Hive and regex</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
 </ul>
-<h2 id="1-structuring-apache-logs">1. Structuring Apache logs</h2>
-<p>Here is a line of Apache log:</p>
+<h2 id="1-structuring-apache-logs-with-hive-and-regex">1. Structuring Apache logs with Hive and regex</h2>
+<h3 id="upload-data-to-hdfs">Upload data to HDFS</h3>
+<p>Before building the whole pipeline, let's have a look at a sample of Apache logs.</p>
 <div class="highlight"><pre><span></span><code>164.29.239.18 - - [01/Aug/2014:11:48:59 -0400] &quot;GET /department/apparel/products HTTP/1.1&quot; 200 991 &quot;-&quot; &quot;Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36&quot;
 </code></pre></div>
+<p>A sample of Apache logs is available <a href="https://github.com/andfanilo/hdp-tutorial/tree/main/data">here</a> in the <code>access.log.2.zip</code> file. We will upload this data into HDFS, parse it using an external Hive table over it and run some SQL queries.</p>
 <ul>
-<li>Copy to HDFS</li>
-<li>Hive external table with regex Serde</li>
-<li>Zeppelin for some SQL queries</li>
+<li>Download and unzip the folder, locally or in your virtual machine depending on how you want to upload the data in HDFS.</li>
+<li>Upload the data in HDFS, at the location <code>/user/root/access</code>. You should end with <code>/user/root/access/access.log.2</code>.</li>
 </ul>
+<details class="tip"><summary>Help on terminal</summary><div class="highlight"><pre><span></span><code><span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># hdfs dfs -mkdir -p /user/root/access</span>
+<span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># wget https://github.com/andfanilo/hdp-tutorial/raw/main/data/access.log.2.zip</span>
+--2020-12-05 <span class="m">14</span>:49:52--  https://github.com/andfanilo/hdp-tutorial/raw/main/data/access.log.2.zip
+Resolving github.com... <span class="m">140</span>.82.121.4
+Connecting to github.com<span class="p">|</span><span class="m">140</span>.82.121.4<span class="p">|</span>:443... connected.
+HTTP request sent, awaiting response... <span class="m">302</span> Found
+Location: https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/access.log.2.zip <span class="o">[</span>following<span class="o">]</span>
+--2020-12-05 <span class="m">14</span>:49:52--  https://raw.githubusercontent.com/andfanilo/hdp-tutorial/main/data/access.log.2.zip
+Resolving raw.githubusercontent.com... <span class="m">151</span>.101.120.133
+Connecting to raw.githubusercontent.com<span class="p">|</span><span class="m">151</span>.101.120.133<span class="p">|</span>:443... connected.
+HTTP request sent, awaiting response... <span class="m">200</span> OK
+Length: <span class="m">3224097</span> <span class="o">(</span><span class="m">3</span>.1M<span class="o">)</span> <span class="o">[</span>application/zip<span class="o">]</span>
+Saving to: <span class="s2">&quot;access.log.2.zip&quot;</span>
+
+<span class="m">100</span>%<span class="o">[==============================================================================================================================</span>&gt;<span class="o">]</span> <span class="m">3</span>,224,097   <span class="m">14</span>.4M/s   in <span class="m">0</span>.2s
+
+<span class="m">2020</span>-12-05 <span class="m">14</span>:49:53 <span class="o">(</span><span class="m">14</span>.4 MB/s<span class="o">)</span> - <span class="s2">&quot;access.log.2.zip&quot;</span> saved <span class="o">[</span><span class="m">3224097</span>/3224097<span class="o">]</span>
+<span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># unzip access.log.2.zip</span>
+Archive:  access.log.2.zip
+inflating: access.log.2
+<span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># hdfs dfs -copyFromLocal access.log.2 /user/root/access</span>
+</code></pre></div>
+</details>
+<p><img alt="" src="../images/td2-logs-ambari.PNG" /></p>
+<ul>
+<li>Take a look at the end of the file in HDFS, using the <code>tail</code> command in HDFS in the terminal.</li>
+</ul>
+<details class="note"><summary>Output</summary><div class="highlight"><pre><span></span><code><span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># hdfs dfs -tail access/access.log.2</span>
+<span class="m">6</span>.1<span class="p">;</span> WOW64<span class="p">;</span> rv:30.0<span class="o">)</span> Gecko/20100101 Firefox/30.0<span class="s2">&quot;</span>
+<span class="s2">64.232.194.248 - - [14/Jun/2014:23:43:32 -0400] &quot;</span>GET /support HTTP/1.1<span class="s2">&quot; 200 887 &quot;</span>-<span class="s2">&quot; &quot;</span>Mozilla/5.0 <span class="o">(</span>Windows NT <span class="m">6</span>.1<span class="p">;</span> rv:30.0<span class="o">)</span> Gecko/20100101 Firefox/30.0<span class="s2">&quot;</span>
+<span class="s2">138.9.185.141 - - [14/Jun/2014:23:43:32 -0400] &quot;</span>GET /department/golf HTTP/1.1<span class="s2">&quot; 200 1075 &quot;</span>-<span class="s2">&quot; &quot;</span>Mozilla/5.0 <span class="o">(</span>Windows NT <span class="m">6</span>.3<span class="p">;</span> WOW64<span class="o">)</span> AppleWebKit/537.36 <span class="o">(</span>KHTML, like Gecko<span class="o">)</span> Chrome/35.0.1916.153 Safari/537.36<span class="s2">&quot;</span>
+<span class="s2">152.208.225.65 - - [14/Jun/2014:23:43:32 -0400] &quot;</span>GET /department/golf HTTP/1.1<span class="s2">&quot; 200 1358 &quot;</span>-<span class="s2">&quot; &quot;</span>Mozilla/5.0 <span class="o">(</span>Windows NT <span class="m">6</span>.1<span class="o">)</span> AppleWebKit/537.36 <span class="o">(</span>KHTML, like Gecko<span class="o">)</span> Chrome/35.0.1916.153 Safari/537.36<span class="s2">&quot;</span>
+<span class="s2">84.246.94.164 - - [14/Jun/2014:23:43:32 -0400] &quot;</span>GET /department/fitness/category/tennis%20<span class="p">&amp;</span>%20racquet HTTP/1.1<span class="s2">&quot; 200 907 &quot;</span>-<span class="s2">&quot; &quot;</span>Mozilla/5.0 <span class="o">(</span>Windows NT <span class="m">6</span>.1<span class="p">;</span> WOW64<span class="p">;</span> rv:30.0<span class="o">)</span> Gecko/20100101 Firefox/30.0<span class="s2">&quot;</span>
+<span class="s2">167.228.157.189 - - [14/Jun/2014:23:43:32 -0400] &quot;</span>GET /department/outdoors HTTP/1.1<span class="s2">&quot; 200 2166 &quot;</span>-<span class="s2">&quot; &quot;</span>Mozilla/5.0 <span class="o">(</span>Macintosh<span class="p">;</span> Intel Mac OS X 10_9_3<span class="o">)</span> AppleWebKit/537.36 <span class="o">(</span>KHTML, like Gecko<span class="o">)</span> Chrome/35.0.1916.153 Safari/537.36<span class="s2">&quot;</span>
+</code></pre></div>
+</details>
+<h3 id="build-a-hive-table-over-the-log-file">Build a Hive table over the log file</h3>
+<p>In the previous tutorial, we created a Hive table over CSV files using the keywords <code>ROW FORMAT DELIMITED FIELDS TERMINATED BY ','</code>. The format of the file in HDFS, which Hive will parse on-demand, must be specified at table creation.</p>
+<p>Here we will use a <code>regex</code> to extract all the information we need from the log files. To enable parsing files in HDFS using regex with Hive, we use a specific SerDe (for serializer/deserializer) <code>ROW FORMAT SERDE 'org.apache.hadoop.hive.contrib.serde2.RegexSerDe'</code>. </p>
+<p>This SERDE is not provided by default, we will need to register a <code>hive-contrib.jar</code> plugin which contains the class. Otherwise you will get <code>Caused by: org.apache.hadoop.hive.ql.metadata.HiveException: java.lang.ClassNotFoundException: Class org.apache.hadoop.hive.contrib.serde2.RegexSerDe not found</code> exceptions.</p>
+<p>Let's try this:</p>
+<ul>
+<li>Open a terminal to your Virtual Machine.</li>
+<li>Open a Hive command line: <code>hive</code>.</li>
+<li>Add the <code>hive-contrib.jar</code> JAR:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">ADD</span> <span class="n">JAR</span> <span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="n">hdp</span><span class="o">/</span><span class="k">current</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">client</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">hive</span><span class="o">-</span><span class="n">contrib</span><span class="p">.</span><span class="n">jar</span><span class="p">;</span>
+</code></pre></div>
+<ul>
+<li>Create an external Hive table <code>intermediate_access_logs</code> (copy-paste the following command):</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span> <span class="k">EXTERNAL</span> <span class="k">TABLE</span> <span class="n">intermediate_access_logs</span> <span class="p">(</span>
+    <span class="n">ip</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">log_date</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="k">method</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">url_site</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">http_version</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">code1</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">code2</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">dash</span> <span class="n">STRING</span><span class="p">,</span>
+    <span class="n">user_agent</span> <span class="n">STRING</span><span class="p">)</span>
+<span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">SERDE</span> <span class="s1">&#39;org.apache.hadoop.hive.contrib.serde2.RegexSerDe&#39;</span>
+<span class="k">WITH</span> <span class="n">SERDEPROPERTIES</span> <span class="p">(</span>
+    <span class="s1">&#39;input.regex&#39;</span> <span class="o">=</span> <span class="s1">&#39;([^ ]*) - - \\[([^\\]]*)\\] &quot;([^\ ]*) ([^\ ]*) ([^\ ]*)&quot; (\\d*) (\\d*) &quot;([^&quot;]*)&quot; &quot;([^&quot;]*)&quot;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;output.format.string&#39;</span> <span class="o">=</span> <span class="ss">&quot;%1$$s %2$$s %3$$s %4$$s %5$$s %6$$s %7$$s %8$$s %9$$s&quot;</span><span class="p">)</span>
+<span class="k">LOCATION</span> <span class="s1">&#39;/user/root/access&#39;</span><span class="p">;</span>
+</code></pre></div>
+<p>Now whenever you run a SQL query on <code>intermediate_access_logs</code>, Hive will run a MapReduce job by first parsing all files in the <code>/user/root/access</code> with the provided regex, then run your query. </p>
+<details class="note"><summary>Output</summary><div class="highlight"><pre><span></span><code>hive&gt; DESCRIBE intermediate_access_logs;
+OK
+ip                      string                  from deserializer
+log_date                string                  from deserializer
+method                  string                  from deserializer
+url_site                string                  from deserializer
+http_version            string                  from deserializer
+code1                   string                  from deserializer
+code2                   string                  from deserializer
+dash                    string                  from deserializer
+user_agent              string                  from deserializer
+Time taken: 0.997 seconds, Fetched: 9 row(s)
+hive&gt; SELECT ip, log_date, user_agent from intermediate_access_logs LIMIT 5;
+OK
+79.133.215.123  14/Jun/2014:10:30:13 -0400      Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36
+162.235.161.200 14/Jun/2014:10:30:13 -0400      Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.76.4 (KHTML, like Gecko) Version/7.0.4 Safari/537.76.4
+39.244.91.133   14/Jun/2014:10:30:14 -0400      Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36
+150.47.54.136   14/Jun/2014:10:30:14 -0400      Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36
+217.89.36.129   14/Jun/2014:10:30:14 -0400      Mozilla/5.0 (Windows NT 6.1; WOW64; rv:30.0) Gecko/20100101 Firefox/30.0
+Time taken: 0.29 seconds, Fetched: 5 row(s)
+hive&gt;
+</code></pre></div>
+</details>
+<ul>
+<li>Running a query on <code>intermediate_access_logs</code> will parse files with regex every time, which is time consuming. Create a new <code>clean_access_logs</code> table with the output for <code>intermediate_access_logs</code> as content.<ul>
+<li>We also optimize the table storage with the <a href="https://orc.apache.org/docs/">ORC format</a>. Using ORC files improves performance when Hive is reading, writing, and processing data.</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">clean_access_logs</span> <span class="n">STORED</span> <span class="k">AS</span> <span class="n">ORC</span> <span class="k">AS</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">intermediate_access_logs</span><span class="p">;</span>
+</code></pre></div>
+<p>Also build a smaller table so you can experiment on it before running on the full dataset:</p>
+<div class="highlight"><pre><span></span><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">sample_access_logs</span> <span class="n">STORED</span> <span class="k">AS</span> <span class="n">ORC</span> <span class="k">AS</span> <span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">clean_access_logs</span> <span class="k">LIMIT</span> <span class="mi">1000</span><span class="p">;</span>
+</code></pre></div>
+<p>You're now free to work on the <code>clean_access_logs</code> or <code>sample_access_logs</code> tables <img alt="😄" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f604.svg" title=":smile:" /></p>
+<div class="admonition question">
+<p class="admonition-title">SQL questions</p>
+<p>Choose 1-2 questions to try:</p>
+<ul>
+<li>Can you count the number of occurences for each IP address ?</li>
+<li>Display how many times each product has been bought</li>
+<li>What percentage of IP addresses went to checkout their basket ?</li>
+<li>If you case the date as a Date you should be able to build a web journey of an IP address on the website. For all IP adresses that went to checkout, compute the number of products each has bought before.</li>
+</ul>
+</div>
+<h3 id="zeppelin-the-big-data-notebook">Zeppelin, the Big Data notebook</h3>
+<p>Apache Zeppelin is a Web-based notebook for interactive data analytics and collaborative documents. You can plugin multiple interpreters to run different Big Data engine inside, by default Hive JDBC and Spark are already configured to run. </p>
+<ul>
+<li>Open <code>http://localhost:9995</code> for a first peek at Zeppelin.</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-start.PNG" /></p>
+<ul>
+<li>Create a new note, write some <a href="https://www.markdownguide.org/">Markdown</a> in the first cell with <code>%md</code> as a first line to choose the Markdown interpreter, and run the cell:</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-hello.PNG" /></p>
+<ul>
+<li>See what happens when you toggle the <code>default</code> view to <code>simple</code> and <code>report</code>.</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-layout.PNG" /></p>
+<ul>
+<li>Each cell has its own set of settings too. For example, change the width of the first cell to 6:</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-cell-settings.PNG" /></p>
+<ul>
+<li>Create a new cell, set the interpreter to <code>Hive JDBC</code> with <code>%jdbc(hive)</code> and run a SQL query against <code>clean_access_logs</code> again.</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-hive.PNG" /></p>
+<ul>
+<li>Do you see that the <code>Hive JDBC</code> cell results have a toolbar for displaying graphs? Play with it a bit then try to replicate the following notebook in <code>report</code> view, with a cell for counting the number of occurences for a few ip addresses.</li>
+</ul>
+<p><img alt="" src="../images/td2-zeppelin-report.PNG" /></p>
+<p><strong>Recap</strong></p>
+<ul>
+<li>We loaded raw Apache logs into HDFS</li>
+<li>We parsed them by pointing an Hive Table over the logs with a regex deserializer to parse each line</li>
+<li>We saved Hive tables with the extracted info and optimized with ORC.</li>
+<li>We built a Zeppelin dashboard with some info on the contents of the log.</li>
+</ul>
+<div class="admonition info">
+<p class="admonition-title">Going back to our objectives</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Structuring Apache logs with Hive and regex</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
+</ul>
+</div>
 <h2 id="2-generating-logs-with-python">2. Generating logs with Python</h2>
 <ul>
 <li>Copy gen_logs to VM</li>
