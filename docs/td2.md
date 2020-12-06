@@ -14,8 +14,8 @@ In this practice session, we will replicate a (albeit smaller) Big Data pipeline
 ## Objectives
 
 - [ ] Structuring Apache logs with Hive and regex
-- [ ] Ingesting Apache logs into HDFS in realtime with Flume
 - [ ] Building a data dashboard with Zeppelin
+- [ ] Ingesting Apache logs into HDFS in realtime with Flume
 
 ## 1. Structuring Apache logs with Hive and regex
 
@@ -197,21 +197,159 @@ Apache Zeppelin is a Web-based notebook for interactive data analytics and colla
 
 !!! info "Going back to our objectives"
     - [x] Structuring Apache logs with Hive and regex
+    - [x] Building a data dashboard with Zeppelin
     - [ ] Ingesting Apache logs into HDFS in realtime with Flume
-    - [ ] Building a data dashboard with Zeppelin
 
 ## 2. Generating logs with Python
 
-- Copy gen_logs to VM
-- Run Python simulation
+Instead of installing an Apache server and hitting it with HTTP requests for new logs, we use a Python script to randomly generate logs into a log file.
+
+- Copy the `gen_logs` folder to the virtual machine and browse inside `cd gen_logs`.
+    - Since `git` is installed in the machine, you can directly clone the full project with `https://github.com/andfanilo/hdp-tutorial.git`
+- Add execution permissions to the Python and Shell files inside `gen_logs`: `chmod +x *.sh` `chmod +x */*.py`
+- Run Python simulation: `./start_logs.sh`
+    - Logs are tailed into `logs/access.log`. In the following sections we should send lines appended to this file into HDFS.
+    - You can follow the produced logs with `./tail_logs.sh`.
+- Kill the log generation with `./stop_logs.sh`.
 
 ## 3. Ingesting data in HDFS with Flume
 
-- Configure Flume
+[Apache Flume](https://flume.apache.org/index.html) is a distributed, reliable, and available system for efficiently collecting, aggregating and moving large amounts of log data from many different sources to a centralized data store.
+
+It follows a simple yet extensible model of `source > channel > sink` configured through a configuration file.
+
+![](./images/flume_overview.png)
+
+Using Flume, we will capture generated logs from Python, simulating customer interaction with the ecommerce website, and aggregate them into HDFS for consolidated analysis through Hive/Zeppelin. This is a very common scenario you can read more about [here](https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#consolidation).
+
+### Test Flume with a simple logging of telnet info
+
+In this first section, we follow the [Flume quickstart](https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#a-simple-example) and build a Flume agent which routes any network information sent over the wire in port 44444, into a Java logger.
+
+- Configure Flume by copying [flume/example.conf](https://github.com/andfanilo/hdp-tutorial/tree/main/flume) into the virtual machine.
+
+??? tip "Help me!"
+    Here's a command to copy-paste multiline content directly into `example.conf` in a terminal:
+    ```sh
+    cat > example.conf << EOF
+    # example.conf: A single-node Flume configuration
+
+    # Name the components on this agent
+    a1.sources = r1
+    a1.sinks = k1
+    a1.channels = c1
+
+    # Describe/configure the source
+    a1.sources.r1.type = netcat
+    a1.sources.r1.bind = localhost
+    a1.sources.r1.port = 44444
+
+    # Describe the sink
+    a1.sinks.k1.type = logger
+
+    # Use a channel which buffers events in memory
+    a1.channels.c1.type = memory
+    a1.channels.c1.capacity = 1000
+    a1.channels.c1.transactionCapacity = 100
+
+    # Bind the source and sink to the channel
+    a1.sources.r1.channels = c1
+    a1.sinks.k1.channel = c1
+    EOF
+    ```
+
+    Use `cat example.conf` to check the file contents, and `rm example.conf` to remove the file and try again.
+
+- Run the Flume agent:
+
+```sh
+flume-ng agent --conf conf --conf-file example.conf --name a1 -Dflume.root.logger=INFO,console
+```
+
+- Connect another terminal to your Virtual Machine, so you have one terminal with the Flume agent running and this second terminal to send network commands. Connect to localhost on port 44444
+
+```sh 
+telnet localhost 44444
+```
+
+Then send some text.
+
+??? note "Output"
+    Your telnet terminal should have:
+    ```sh
+    [root@sandbox ~]# telnet localhost 44444
+    Trying ::1...
+    telnet: connect to address ::1: Connection refused
+    Trying 127.0.0.1...
+    Connected to localhost.
+    Escape character is '^]'.
+    coucou
+    OK
+    hadoop
+    OK
+    ```
+
+    And your Flume terminal should log the messages from port 44444:
+    ```sh 
+    [root@sandbox ~]# flume-ng agent --conf conf --conf-file example.conf --name a1 -Dflume.root.logger=INFO,console
+    20/12/06 11:02:40 INFO node.PollingPropertiesFileConfigurationProvider: Configuration provider starting
+    20/12/06 11:02:40 INFO node.PollingPropertiesFileConfigurationProvider: Reloading configuration file:example.conf
+    20/12/06 11:02:40 INFO conf.FlumeConfiguration: Added sinks: k1 Agent: a1
+    20/12/06 11:02:40 INFO conf.FlumeConfiguration: Processing:k1
+    20/12/06 11:02:40 INFO conf.FlumeConfiguration: Processing:k1
+    20/12/06 11:02:40 INFO conf.FlumeConfiguration: Post-validation flume configuration contains configuration for agents: [a1]
+    20/12/06 11:02:40 INFO node.AbstractConfigurationProvider: Creating channels
+    20/12/06 11:02:40 INFO channel.DefaultChannelFactory: Creating instance of channel c1 type memory
+    20/12/06 11:02:40 INFO node.AbstractConfigurationProvider: Created channel c1
+    20/12/06 11:02:40 INFO source.DefaultSourceFactory: Creating instance of source r1, type netcat
+    20/12/06 11:02:40 INFO sink.DefaultSinkFactory: Creating instance of sink: k1, type: logger
+    20/12/06 11:02:40 INFO node.AbstractConfigurationProvider: Channel c1 connected to [r1, k1]
+    20/12/06 11:02:40 INFO node.Application: Starting new configuration:{ sourceRunners:{r1=EventDrivenSourceRunner: { source:org.apache.flume.source.NetcatSource{name:r1,state:IDLE} }} sinkRunners:{k1=SinkRunner: { policy:org.apache.flume.sink.DefaultSinkProcessor@11d97d51 counterGroup:{ name:null counters:{} } }} channels:{c1=org.apache.flume.channel.MemoryChannel{name: c1}} }
+    20/12/06 11:02:40 INFO node.Application: Starting Channel c1
+    20/12/06 11:02:40 INFO instrumentation.MonitoredCounterGroup: Monitored counter group for type: CHANNEL, name: c1: Successfully registered new MBean.
+    20/12/06 11:02:40 INFO instrumentation.MonitoredCounterGroup: Component type: CHANNEL, name: c1 started
+    20/12/06 11:02:40 INFO node.Application: Starting Sink k1
+    20/12/06 11:02:40 INFO node.Application: Starting Source r1
+    20/12/06 11:02:40 INFO source.NetcatSource: Source starting
+    20/12/06 11:02:40 INFO source.NetcatSource: Created serverSocket:sun.nio.ch.ServerSocketChannelImpl[/127.0.0.1:44444]
+    20/12/06 11:04:54 INFO sink.LoggerSink: Event: { headers:{} body: 63 6F 75 63 6F 75 0D                            coucou. }
+    20/12/06 11:05:09 INFO sink.LoggerSink: Event: { headers:{} body: 68 61 64 6F 6F                                                                                         70 0D                            hadoop. }
+    ```
+    
+    The two last lines are the most important, they are logged by the Flume sink.
+
+- Close the Flume agent and telnet. 
+
+!!! question "Question: go futher by replacing the logger sink with a HDFS sink"
+    Using [vi](https://www.tutorialspoint.com/unix/unix-vi-editor.htm) to edit the `example.conf` file (`vi example.conf` to enter edit mode, `a` to enter append mode and edit the text, `ESC` to exit edit mode, `:wq <ENTER>` to save and exit, `:q! <ENTER>` to exit without saving), look how to change the sink to [HDFS sink](https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#hdfs-sink) and save the netcat commands into `/user/root/netcat` in HDFS for example.
+
+    Absolutely look for the answer on Google!
+
+This example presented how to use Flume configuration to configure a Flume pipeline. In the next section we will build a configuration to tail the logs into HDFS.
+
+### Route Apache logs to HDFS with Flume
+
+Time to build [a configuration file](https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#configuration) to route Apache logs into HDFS. 
+
+We will use the following components:
+
+- Source: exec
+- Channel: memory
+- Sink: HDFS (Hive should be possible too)
 - Output in external Hive table
 
-## 4. Dashboarding with Zeppelin
+## 4. Improving your Zeppelin Dashboard
 
-- TODO
+- You can add [forms](https://zeppelin.apache.org/docs/0.6.2/manual/dynamicform.html#text-input-form) to a Zeppelin cell, so you can dynamically manipulate your Hive query.
+- Build a graph to showcase the quantity of bought articles every 5 minutes, based on the Apache logs generated by the previous section.
 
 ## Conclusion
+
+In this tutorial, you deployed a full Big Data pipeline for ingesting simulation data from ecommerce activity into HDFS, ready for data analysis. This pipeline is fully scalable and distributed, so can be used from small to very large activity.
+
+!!! info "Going back to our objectives"
+    - [x] Structuring Apache logs with Hive and regex
+    - [x] Building a data dashboard with Zeppelin
+    - [x] Ingesting Apache logs into HDFS in realtime with Flume
+
+Take a break now, you deserve it :smile:
