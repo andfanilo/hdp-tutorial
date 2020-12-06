@@ -284,11 +284,31 @@
     3. Ingesting data in HDFS with Flume
   </a>
   
+    <nav class="md-nav" aria-label="3. Ingesting data in HDFS with Flume">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-flume-with-a-simple-logging-of-telnet-info" class="md-nav__link">
+    Test Flume with a simple logging of telnet info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-apache-logs-to-hdfs-with-flume" class="md-nav__link">
+    Route Apache logs to HDFS with Flume
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-dashboarding-with-zeppelin" class="md-nav__link">
-    4. Dashboarding with Zeppelin
+  <a href="#4-improving-your-zeppelin-dashboard" class="md-nav__link">
+    4. Improving your Zeppelin Dashboard
   </a>
   
 </li>
@@ -407,11 +427,31 @@
     3. Ingesting data in HDFS with Flume
   </a>
   
+    <nav class="md-nav" aria-label="3. Ingesting data in HDFS with Flume">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-flume-with-a-simple-logging-of-telnet-info" class="md-nav__link">
+    Test Flume with a simple logging of telnet info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#route-apache-logs-to-hdfs-with-flume" class="md-nav__link">
+    Route Apache logs to HDFS with Flume
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-dashboarding-with-zeppelin" class="md-nav__link">
-    4. Dashboarding with Zeppelin
+  <a href="#4-improving-your-zeppelin-dashboard" class="md-nav__link">
+    4. Improving your Zeppelin Dashboard
   </a>
   
 </li>
@@ -448,8 +488,8 @@
 <h2 id="objectives">Objectives</h2>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Structuring Apache logs with Hive and regex</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
 </ul>
 <h2 id="1-structuring-apache-logs-with-hive-and-regex">1. Structuring Apache logs with Hive and regex</h2>
 <h3 id="upload-data-to-hdfs">Upload data to HDFS</h3>
@@ -611,25 +651,148 @@ hive&gt;
 <p class="admonition-title">Going back to our objectives</p>
 <ul class="task-list">
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Structuring Apache logs with Hive and regex</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
 <li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
 </ul>
 </div>
 <h2 id="2-generating-logs-with-python">2. Generating logs with Python</h2>
+<p>Instead of installing an Apache server and hitting it with HTTP requests for new logs, we use a Python script to randomly generate logs into a log file.</p>
 <ul>
-<li>Copy gen_logs to VM</li>
-<li>Run Python simulation</li>
+<li>Copy the <code>gen_logs</code> folder to the virtual machine and browse inside <code>cd gen_logs</code>.<ul>
+<li>Since <code>git</code> is installed in the machine, you can directly clone the full project with <code>https://github.com/andfanilo/hdp-tutorial.git</code></li>
+</ul>
+</li>
+<li>Add execution permissions to the Python and Shell files inside <code>gen_logs</code>: <code>chmod +x *.sh</code> <code>chmod +x */*.py</code></li>
+<li>Run Python simulation: <code>./start_logs.sh</code><ul>
+<li>Logs are tailed into <code>logs/access.log</code>. In the following sections we should send lines appended to this file into HDFS.</li>
+<li>You can follow the produced logs with <code>./tail_logs.sh</code>.</li>
+</ul>
+</li>
+<li>Kill the log generation with <code>./stop_logs.sh</code>.</li>
 </ul>
 <h2 id="3-ingesting-data-in-hdfs-with-flume">3. Ingesting data in HDFS with Flume</h2>
+<p><a href="https://flume.apache.org/index.html">Apache Flume</a> is a distributed, reliable, and available system for efficiently collecting, aggregating and moving large amounts of log data from many different sources to a centralized data store.</p>
+<p>It follows a simple yet extensible model of <code>source &gt; channel &gt; sink</code> configured through a configuration file.</p>
+<p><img alt="" src="../images/flume_overview.png" /></p>
+<p>Using Flume, we will capture generated logs from Python, simulating customer interaction with the ecommerce website, and aggregate them into HDFS for consolidated analysis through Hive/Zeppelin. This is a very common scenario you can read more about <a href="https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#consolidation">here</a>.</p>
+<h3 id="test-flume-with-a-simple-logging-of-telnet-info">Test Flume with a simple logging of telnet info</h3>
+<p>In this first section, we follow the <a href="https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#a-simple-example">Flume quickstart</a> and build a Flume agent which routes any network information sent over the wire in port 44444, into a Java logger.</p>
 <ul>
-<li>Configure Flume</li>
+<li>Configure Flume by copying <a href="https://github.com/andfanilo/hdp-tutorial/tree/main/flume">flume/example.conf</a> into the virtual machine.</li>
+</ul>
+<details class="tip"><summary>Help me!</summary><p>Here's a command to copy-paste multiline content directly into <code>example.conf</code> in a terminal:
+<div class="highlight"><pre><span></span><code>cat &gt; example.conf <span class="s">&lt;&lt; EOF</span>
+<span class="s"># example.conf: A single-node Flume configuration</span>
+
+<span class="s"># Name the components on this agent</span>
+<span class="s">a1.sources = r1</span>
+<span class="s">a1.sinks = k1</span>
+<span class="s">a1.channels = c1</span>
+
+<span class="s"># Describe/configure the source</span>
+<span class="s">a1.sources.r1.type = netcat</span>
+<span class="s">a1.sources.r1.bind = localhost</span>
+<span class="s">a1.sources.r1.port = 44444</span>
+
+<span class="s"># Describe the sink</span>
+<span class="s">a1.sinks.k1.type = logger</span>
+
+<span class="s"># Use a channel which buffers events in memory</span>
+<span class="s">a1.channels.c1.type = memory</span>
+<span class="s">a1.channels.c1.capacity = 1000</span>
+<span class="s">a1.channels.c1.transactionCapacity = 100</span>
+
+<span class="s"># Bind the source and sink to the channel</span>
+<span class="s">a1.sources.r1.channels = c1</span>
+<span class="s">a1.sinks.k1.channel = c1</span>
+<span class="s">EOF</span>
+</code></pre></div></p>
+<p>Use <code>cat example.conf</code> to check the file contents, and <code>rm example.conf</code> to remove the file and try again.</p>
+</details>
+<ul>
+<li>Run the Flume agent:</li>
+</ul>
+<div class="highlight"><pre><span></span><code>flume-ng agent --conf conf --conf-file example.conf --name a1 -Dflume.root.logger<span class="o">=</span>INFO,console
+</code></pre></div>
+<ul>
+<li>Connect another terminal to your Virtual Machine, so you have one terminal with the Flume agent running and this second terminal to send network commands. Connect to localhost on port 44444</li>
+</ul>
+<div class="highlight"><pre><span></span><code>telnet localhost <span class="m">44444</span>
+</code></pre></div>
+<p>Then send some text.</p>
+<details class="note"><summary>Output</summary><p>Your telnet terminal should have:
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># telnet localhost 44444</span>
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+Trying <span class="m">127</span>.0.0.1...
+Connected to localhost.
+Escape character is <span class="s1">&#39;^]&#39;</span>.
+coucou
+OK
+hadoop
+OK
+</code></pre></div></p>
+<p>And your Flume terminal should log the messages from port 44444:
+<div class="highlight"><pre><span></span><code><span class="o">[</span>root@sandbox ~<span class="o">]</span><span class="c1"># flume-ng agent --conf conf --conf-file example.conf --name a1 -Dflume.root.logger=INFO,console</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.PollingPropertiesFileConfigurationProvider: Configuration provider starting
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.PollingPropertiesFileConfigurationProvider: Reloading configuration file:example.conf
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO conf.FlumeConfiguration: Added sinks: k1 Agent: a1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO conf.FlumeConfiguration: Processing:k1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO conf.FlumeConfiguration: Processing:k1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO conf.FlumeConfiguration: Post-validation flume configuration contains configuration <span class="k">for</span> agents: <span class="o">[</span>a1<span class="o">]</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.AbstractConfigurationProvider: Creating channels
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO channel.DefaultChannelFactory: Creating instance of channel c1 <span class="nb">type</span> memory
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.AbstractConfigurationProvider: Created channel c1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO source.DefaultSourceFactory: Creating instance of <span class="nb">source</span> r1, <span class="nb">type</span> netcat
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO sink.DefaultSinkFactory: Creating instance of sink: k1, type: logger
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.AbstractConfigurationProvider: Channel c1 connected to <span class="o">[</span>r1, k1<span class="o">]</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.Application: Starting new configuration:<span class="o">{</span> sourceRunners:<span class="o">{</span><span class="nv">r1</span><span class="o">=</span>EventDrivenSourceRunner: <span class="o">{</span> source:org.apache.flume.source.NetcatSource<span class="o">{</span>name:r1,state:IDLE<span class="o">}</span> <span class="o">}}</span> sinkRunners:<span class="o">{</span><span class="nv">k1</span><span class="o">=</span>SinkRunner: <span class="o">{</span> policy:org.apache.flume.sink.DefaultSinkProcessor@11d97d51 counterGroup:<span class="o">{</span> name:null counters:<span class="o">{}</span> <span class="o">}</span> <span class="o">}}</span> channels:<span class="o">{</span><span class="nv">c1</span><span class="o">=</span>org.apache.flume.channel.MemoryChannel<span class="o">{</span>name: c1<span class="o">}}</span> <span class="o">}</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.Application: Starting Channel c1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO instrumentation.MonitoredCounterGroup: Monitored counter group <span class="k">for</span> type: CHANNEL, name: c1: Successfully registered new MBean.
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO instrumentation.MonitoredCounterGroup: Component type: CHANNEL, name: c1 started
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.Application: Starting Sink k1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO node.Application: Starting Source r1
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO source.NetcatSource: Source starting
+<span class="m">20</span>/12/06 <span class="m">11</span>:02:40 INFO source.NetcatSource: Created serverSocket:sun.nio.ch.ServerSocketChannelImpl<span class="o">[</span>/127.0.0.1:44444<span class="o">]</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:04:54 INFO sink.LoggerSink: Event: <span class="o">{</span> headers:<span class="o">{}</span> body: <span class="m">63</span> 6F <span class="m">75</span> <span class="m">63</span> 6F <span class="m">75</span> 0D                            coucou. <span class="o">}</span>
+<span class="m">20</span>/12/06 <span class="m">11</span>:05:09 INFO sink.LoggerSink: Event: <span class="o">{</span> headers:<span class="o">{}</span> body: <span class="m">68</span> <span class="m">61</span> <span class="m">64</span> 6F 6F                                                                                         <span class="m">70</span> 0D                            hadoop. <span class="o">}</span>
+</code></pre></div></p>
+<p>The two last lines are the most important, they are logged by the Flume sink.</p>
+</details>
+<ul>
+<li>Close the Flume agent and telnet. </li>
+</ul>
+<div class="admonition question">
+<p class="admonition-title">Question: go futher by replacing the logger sink with a HDFS sink</p>
+<p>Using <a href="https://www.tutorialspoint.com/unix/unix-vi-editor.htm">vi</a> to edit the <code>example.conf</code> file (<code>vi example.conf</code> to enter edit mode, <code>a</code> to enter append mode and edit the text, <code>ESC</code> to exit edit mode, <code>:wq &lt;ENTER&gt;</code> to save and exit, <code>:q! &lt;ENTER&gt;</code> to exit without saving), look how to change the sink to <a href="https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#hdfs-sink">HDFS sink</a> and save the netcat commands into <code>/user/root/netcat</code> in HDFS for example.</p>
+<p>Absolutely look for the answer on Google!</p>
+</div>
+<p>This example presented how to use Flume configuration to configure a Flume pipeline. In the next section we will build a configuration to tail the logs into HDFS.</p>
+<h3 id="route-apache-logs-to-hdfs-with-flume">Route Apache logs to HDFS with Flume</h3>
+<p>Time to build <a href="https://flume.apache.org/releases/content/1.9.0/FlumeUserGuide.html#configuration">a configuration file</a> to route Apache logs into HDFS. </p>
+<p>We will use the following components:</p>
+<ul>
+<li>Source: exec</li>
+<li>Channel: memory</li>
+<li>Sink: HDFS (Hive should be possible too)</li>
 <li>Output in external Hive table</li>
 </ul>
-<h2 id="4-dashboarding-with-zeppelin">4. Dashboarding with Zeppelin</h2>
+<h2 id="4-improving-your-zeppelin-dashboard">4. Improving your Zeppelin Dashboard</h2>
 <ul>
-<li>TODO</li>
+<li>You can add <a href="https://zeppelin.apache.org/docs/0.6.2/manual/dynamicform.html#text-input-form">forms</a> to a Zeppelin cell, so you can dynamically manipulate your Hive query.</li>
+<li>Build a graph to showcase the quantity of bought articles every 5 minutes, based on the Apache logs generated by the previous section.</li>
 </ul>
 <h2 id="conclusion">Conclusion</h2>
+<p>In this tutorial, you deployed a full Big Data pipeline for ingesting simulation data from ecommerce activity into HDFS, ready for data analysis. This pipeline is fully scalable and distributed, so can be used from small to very large activity.</p>
+<div class="admonition info">
+<p class="admonition-title">Going back to our objectives</p>
+<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Structuring Apache logs with Hive and regex</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Building a data dashboard with Zeppelin</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> Ingesting Apache logs into HDFS in realtime with Flume</li>
+</ul>
+</div>
+<p>Take a break now, you deserve it <img alt="😄" class="twemoji" src="https://twemoji.maxcdn.com/v/latest/svg/1f604.svg" title=":smile:" /></p>
                 
               
               
